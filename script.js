@@ -1,24 +1,3 @@
-// Add todo 
-
-
-
-
-// Click Event: marked as completed
-
-
-
-
-
-// Click Event (x icon): marked as completed
-
-
-
-
-
-// Saved in browser
-
-
-
 // HTML Element
 
 let inputTodoContent = document.querySelector("input[type='text']")
@@ -28,6 +7,9 @@ let addBtn = document.querySelector("button")
 
 let todoList = []
 
+// App Flow
+getAndPrintTodoItems()
+
 
 
 
@@ -36,24 +18,89 @@ let todoList = []
 addBtn.addEventListener("click", e => {
     e.preventDefault()
     let todoContent = inputTodoContent.value
+    if(todoContent.length == 0) {
+        return
+    }
     // Create unique id
     const currentDate = new Date();
     const uniqueId = currentDate.getTime().toString();
-    // Get Template
-    let temp = document.getElementsByTagName("template")[0];
-    let clon = temp.content.cloneNode(true);
-    // Place text
-    clon.querySelector("li input").id = uniqueId
-    clon.querySelector("li label").setAttribute("for", uniqueId)
-    clon.querySelector("li label").innerText = todoContent
-    // Move Template
-    document.querySelector(".todo-list").appendChild(clon);
+    // Create and Move Template
+    createTemplate(uniqueId, todoContent, false)
     // Update Array
     todoList.push({
         todoId: uniqueId, 
         content: todoContent,
         completed: false
     })
-    console.log(todoList)
+    // Saved to local browser
+    let todoListString = JSON.stringify(todoList)
+    localStorage.setItem("todo-list-app", todoListString)
 })
+
+
+
+
+// Function: get and print todo items
+
+function getAndPrintTodoItems() {
+    let connectArray = JSON.parse(localStorage.getItem("todo-list-app"))
+    if(connectArray == null) {
+        return
+    }
+    todoList = connectArray
+    todoList.forEach(element => {
+        createTemplate(element.todoId, element.content, element.completed)
+    });
+}
+
+
+
+
+// Function: create "todo item" template and print
+
+function createTemplate(id, content, completedStatus) {
+    // Get Template
+    let temp = document.getElementsByTagName("template")[0];
+    let clon = temp.content.cloneNode(true);
+    // Place text
+    clon.querySelector("li input").id = id
+    clon.querySelector("li label").setAttribute("for", id)
+    clon.querySelector("li label").innerText = content
+    clon.querySelector("li :is(label, input)").addEventListener("click", changeCompleteStatus)
+    // Check status
+    clon.querySelector("li input").checked = completedStatus
+    // Move Template
+    document.querySelector(".todo-list").appendChild(clon);
+}
+
+
+
+
+// Function: complete status
+
+function changeCompleteStatus(e) {
+    // Get id of item clicked
+    let targetId = e.target.id
+    // Edit
+    todoList.forEach(e => {
+        if(e.todoId == targetId) {
+            e.completed = !e.completed
+        }
+    })
+    // Saved to local browser
+    let todoListString = JSON.stringify(todoList)
+    localStorage.setItem("todo-list-app", todoListString)
+}
+
+
+
+
+
+
+
+// Click Event: marked as completed
+
+// Click Event (x icon): remove todo item
+
+// Saved in browser
 
