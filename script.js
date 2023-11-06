@@ -67,6 +67,9 @@ function createTemplate(id, content, completedStatus) {
     clon.querySelector("li label").setAttribute("for", id)
     clon.querySelector("li label").innerText = content
     clon.querySelector("li :is(label, input)").addEventListener("click", changeCompleteStatus)
+    clon.querySelector("li .material-symbols-outlined").addEventListener("click", removeTodo)
+    clon.querySelector("li").dataset.todoId = id
+
     // Check status
     clon.querySelector("li input").checked = completedStatus
     // Move Template
@@ -95,12 +98,15 @@ function changeCompleteStatus(e) {
 
 
 
+// Function: remove 
 
-
-
-// Click Event: marked as completed
-
-// Click Event (x icon): remove todo item
-
-// Saved in browser
+function removeTodo(e) {
+    document.querySelector(".todo-list").innerHTML = ""
+    let removeIcon = e.target
+    let removedId = removeIcon.closest("li").dataset.todoId
+    let updatedArray = todoList.filter(e => e.todoId !== removedId);
+    updatedArray = JSON.stringify(updatedArray)
+    localStorage.setItem("todo-list-app", updatedArray)
+    getAndPrintTodoItems()
+}
 

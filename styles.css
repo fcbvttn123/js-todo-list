@@ -50,14 +50,23 @@ body {
     display: grid;
     place-content: center;
     background-color: black;
-    padding: 1rem 0;
+    padding: 1rem .5rem;
     font-family: 'Inter', sans-serif;
+    background-image: linear-gradient(135deg, rgb(48, 48, 147), rgb(100, 39, 100));
 }
 
 .box {
     background-color: white;
     width: 50vw;
-    padding: 2rem 1.5rem;
+    padding: 2.5rem 1.7rem;
+    border-radius: 1rem;
+    max-width: 500px;
+}
+
+@media (max-width: 950px) {
+    .box {
+        width: 90vw;
+    }
 }
 
 .material-symbols-outlined {
